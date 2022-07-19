@@ -22,12 +22,13 @@ const (
 	ecExtensionHeaderLen    int = 2
 	ecpfExtensionHeaderLen  int = 1
 
-	contentType            uint8  = 22
-	handshakeType          uint8  = 1
-	sniExtensionType       uint16 = 0
-	sniNameDNSHostnameType uint8  = 0
-	ecExtensionType        uint16 = 10
-	ecpfExtensionType      uint16 = 11
+	contentType              uint8  = 22
+	clientHelloHandshakeType uint8  = 1
+	serverHelloHandshakeType uint8  = 2
+	sniExtensionType         uint16 = 0
+	sniNameDNSHostnameType   uint8  = 0
+	ecExtensionType          uint16 = 10
+	ecpfExtensionType        uint16 = 11
 
 	// Versions
 	// The bitmask covers the versions SSL3.0 to TLS1.2
@@ -63,13 +64,13 @@ func (j *JA3) parseSegment(segment []byte) error {
 		return &ParseError{VersionErr, 1}
 	}
 
-    // Check that the Handshake is as long as expected from the length field
+	// Check that the Handshake is as long as expected from the length field
 	segmentLen := uint16(segment[3])<<8 | uint16(segment[4])
-    if len(segment[recordLayerHeaderLen:]) < int(segmentLen) {
-        return &ParseError{LengthErr, 2}
-    }
-    // Keep the Handshake messege, ignore any additional following record types
-    hs := segment[recordLayerHeaderLen:recordLayerHeaderLen+int(segmentLen)]
+	if len(segment[recordLayerHeaderLen:]) < int(segmentLen) {
+		return &ParseError{LengthErr, 2}
+	}
+	// Keep the Handshake messege, ignore any additional following record types
+	hs := segment[recordLayerHeaderLen : recordLayerHeaderLen+int(segmentLen)]
 
 	err := j.parseHandshake(hs)
 
@@ -86,7 +87,7 @@ func (j *JA3) parseHandshake(hs []byte) error {
 
 	// Check if we have "Handshake Type: Client Hello (1)"
 	handshType := uint8(hs[0])
-	if handshType != handshakeType {
+	if handshType != clientHelloHandshakeType {
 		return &ParseError{errType: HandshakeTypeErr}
 	}
 
