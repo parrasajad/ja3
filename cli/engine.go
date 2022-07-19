@@ -8,13 +8,14 @@ package main
 
 import (
 	"encoding/json"
+	"io"
+	"os"
+
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcap"
 	"github.com/google/gopacket/pcapgo"
-	"github.com/open-ch/ja3"
-	"io"
-	"os"
+	"github.com/parrasajad/ja3"
 )
 
 // Reader provides an uniform interface when reading from different sources for the command line interface.

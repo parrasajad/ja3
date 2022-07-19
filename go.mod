@@ -1,4 +1,4 @@
-module github.com/open-ch/ja3
+module github.com/parrasajad/ja3
 
 go 1.18
 
